@@ -1,8 +1,13 @@
 package com.skycoffe.skycoffe_API.Controllers;
 
+import com.skycoffe.skycoffe_API.Models.Producto;
 import com.skycoffe.skycoffe_API.Models.Usuario;
 import com.skycoffe.skycoffe_API.Services.UsuarioService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 
@@ -20,14 +25,16 @@ public class UsuarioController {
         return service.GetAll();
     }
 
-    @PostMapping
-    public Usuario create(@RequestBody Usuario usuario){
-        return service.create(usuario);
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity <Usuario> create (@RequestPart ("usuario")Usuario usuario, @RequestPart (value = "imagen", required = false) MultipartFile imagen) throws IOException {
+        Usuario nuevo = service.create(usuario, imagen);
+        return ResponseEntity.ok(nuevo);
     }
 
-    @PutMapping("/{id}")
-    public Usuario update(@PathVariable Integer id,@RequestBody Usuario usuario){
-        return service.update(id, usuario);
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<Usuario> update (@PathVariable Integer id, @RequestPart("usuario") Usuario usuario, @RequestPart (value = "imangen", required = false) MultipartFile imagen) throws IOException {
+        Usuario actualizado = service.update(id, usuario, imagen);
+        return ResponseEntity.ok(actualizado);
     }
 
     @DeleteMapping("/{id}")

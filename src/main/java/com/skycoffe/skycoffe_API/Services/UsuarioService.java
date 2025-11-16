@@ -3,39 +3,52 @@ package com.skycoffe.skycoffe_API.Services;
 import com.skycoffe.skycoffe_API.Models.Usuario;
 import com.skycoffe.skycoffe_API.Repositorys.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
 public class UsuarioService {
 
-    private final UsuarioRepository repo;
+    private final UsuarioRepository usuarioRepository;
+    private final CloudinaryService cloudinaryService;
 
-    public UsuarioService(UsuarioRepository repo){
-        this.repo = repo;
+    public UsuarioService(UsuarioRepository usuarioRepository, CloudinaryService cloudinaryService){
+        this.usuarioRepository = usuarioRepository;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public List<Usuario>GetAll(){
-        return repo.findAll();
+        return usuarioRepository.findAll();
     }
 
-    public Usuario create(Usuario usuario){
-        return repo.save(usuario);
+    public Usuario create(Usuario usuario, MultipartFile imagen) throws IOException {
+        if (imagen != null && !imagen.isEmpty()){
+            String url = cloudinaryService.uploadImage(imagen);
+            usuario.setFoto_perfil(url);
+
+        }
+        return usuarioRepository.save(usuario);
     }
 
-    public Usuario update (Integer id, Usuario newUsuario){
-        Usuario usuario = repo.findById(id).orElseThrow();
+    public Usuario update (Integer id, Usuario newUsuario, MultipartFile imagen) throws IOException {
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow();
 
         usuario.setNombre(newUsuario.getNombre());
         usuario.setCorreo(newUsuario.getCorreo());
         usuario.setTelefono(newUsuario.getTelefono());
-        usuario.setFoto_perfil(newUsuario.getFoto_perfil());
 
-        return repo.save(usuario);
+        if (imagen != null && !imagen.isEmpty()){
+            String url = cloudinaryService.uploadImage(imagen);
+            usuario.setFoto_perfil(url);
+        }
+
+        return usuarioRepository.save(usuario);
     }
 
     public void delete(Integer id){
-        repo.deleteById(id);
+        usuarioRepository.deleteById(id);
     }
 
 }

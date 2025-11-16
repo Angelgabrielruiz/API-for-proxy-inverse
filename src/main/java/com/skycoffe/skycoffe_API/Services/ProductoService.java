@@ -11,18 +11,16 @@ import java.util.List;
 @Service
 public class ProductoService {
 
-    private final ProductoRepository repo;
     private final CloudinaryService cloudinaryService;
     private final ProductoRepository productoRepository;
 
     public ProductoService (ProductoRepository repo, CloudinaryService cloudinaryService, ProductoRepository productoRepository){
-        this.repo = repo;
         this.cloudinaryService = cloudinaryService;
         this.productoRepository = productoRepository;
     }
 
     public List<Producto>GetAll(){
-        return repo.findAll();
+        return productoRepository.findAll();
     }
 
     public Producto create(Producto producto, MultipartFile imagen) throws Exception {
@@ -36,7 +34,7 @@ public class ProductoService {
     }
 
     public Producto update(Integer id, Producto newProducto, MultipartFile imagen) throws IOException {
-        Producto producto = repo.findById(id).orElseThrow();
+        Producto producto = productoRepository.findById(id).orElseThrow();
 
         producto.setNombre(newProducto.getNombre());
         producto.setPrecio(newProducto.getPrecio());
@@ -48,10 +46,10 @@ public class ProductoService {
             producto.setImagen(url);
         }
 
-        return repo.save(producto);
+        return productoRepository.save(producto);
     }
 
     public void delete(Integer id){
-        repo.deleteById(id);
+        productoRepository.deleteById(id);
     }
 }
