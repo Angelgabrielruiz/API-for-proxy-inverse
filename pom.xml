@@ -58,7 +58,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- dependencias para cloudinary -->
+		<dependency>
+			<groupId>com.cloudinary</groupId>
+			<artifactId>cloudinary-http5</artifactId>
+			<version>2.3.2</version>
+		</dependency>
+
 	</dependencies>
+
+
 
 	<build>
 		<plugins>
